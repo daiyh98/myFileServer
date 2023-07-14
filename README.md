@@ -1,6 +1,6 @@
 ## 服务架构
 
-![image-20230713185637239](/Users/daiyh/Library/Application Support/typora-user-images/image-20230713185637239.png)
+![image](https://github.com/daiyh98/myFileServer/assets/43029102/d713ecab-7deb-46e4-83e5-c7266a4439b3)
 
 ### 用户与server之间的交互
 
