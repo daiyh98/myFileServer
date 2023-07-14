@@ -17,3 +17,5 @@
 | 文件删除 | POST /file/update  |
 |          |                    |
 
+文件上传功能原理图：
+![go_server_structure_annotated_interface](https://github.com/daiyh98/myFileServer/assets/43029102/f52b0344-430b-4fe5-8ebe-0c0d9e3c5153)
