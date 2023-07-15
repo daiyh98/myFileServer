@@ -8,7 +8,7 @@ type FileMeta struct {
 
 var fileMetaMap map[string]FileMeta
 
-func initFileMetaMap() {
+func init() {
 	fileMetaMap = make(map[string]FileMeta)
 }
 

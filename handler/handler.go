@@ -1,6 +1,7 @@
 package handler
 
 import (
+	"encoding/json"
 	"fmt"
 	"io"
 	"myFileServer/metaInfo"
@@ -10,6 +11,7 @@ import (
 	"time"
 )
 
+// UploadHandler 上传文件
 func UploadHandler(w http.ResponseWriter, request *http.Request) {
 	if request.Method == "GET" {
 		//返回上传html页面
@@ -61,4 +63,43 @@ func UploadHandler(w http.ResponseWriter, request *http.Request) {
 // UploadSuccessHandler 上传已完成
 func UploadSuccessHandler(w http.ResponseWriter, request *http.Request) {
 	io.WriteString(w, "Upload succeeded!")
+}
+
+// GetFileMetaHandler 查询文件元信息
+func GetFileMetaHandler(w http.ResponseWriter, request *http.Request) {
+	request.ParseForm()
+
+	fileHash := request.Form["filehash"][0]
+	fileMeta := metaInfo.GetFileMeta(fileHash)
+	data, err := json.Marshal(fileMeta)
+	if err != nil {
+		//fmt.Printf("failed to get file meta, err: %s\n", err.Error())
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+	w.Write(data)
+}
+
+// DownloadHandler 下载文件
+func DownloadHandler(w http.ResponseWriter, request *http.Request) {
+	request.ParseForm()
+
+	fileHash := request.Form["filehash"][0]
+	fileMeta := metaInfo.GetFileMeta(fileHash)
+
+	file, err := os.Open(fileMeta.FileLocation) //得到文件勾柄
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+	defer file.Close()
+
+	data, err := io.ReadAll(file)
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+	w.Header().Set("Content-Type", "application/octect-stream")
+	w.Header().Set("content-disposition", "attachment;filename=\""+fileMeta.FileName+"\"")
+	w.Write(data)
 }
