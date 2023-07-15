@@ -137,5 +137,12 @@ func UpdateFileMetaHandler(w http.ResponseWriter, request *http.Request) {
 // DeleteHandler 删除文件
 func DeleteHandler(w http.ResponseWriter, request *http.Request) {
 	request.ParseForm()
+	fileSha1 := request.Form.Get("filehash")
 
+	fileMeta := metaInfo.GetFileMeta(fileSha1)
+	os.Remove(fileMeta.FileLocation)
+	
+	metaInfo.DeleteFileMeta(fileSha1)
+
+	w.WriteHeader(http.StatusOK)
 }

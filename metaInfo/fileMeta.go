@@ -23,6 +23,6 @@ func GetFileMeta(fileSha1 string) FileMeta {
 }
 
 // deleteFileMeta 通过sha1值删除某个文件的元信息对象
-func deleteFileMeta(fileSha1 string) {
+func DeleteFileMeta(fileSha1 string) {
 	delete(fileMetaMap, fileSha1)
 }
