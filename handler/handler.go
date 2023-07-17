@@ -54,7 +54,8 @@ func UploadHandler(w http.ResponseWriter, request *http.Request) {
 
 		newFile.Seek(0, 0)
 		fileMeta.FileSha1 = utils.FileSha1(newFile)
-		metaInfo.UpdateFileMetaMap(fileMeta)
+		//metaInfo.UpdateFileMetaMap(fileMeta)
+		_ = metaInfo.UpdateFileMetaDB(fileMeta)
 
 		http.Redirect(w, request, "/file/upload/succeed", http.StatusFound)
 	}
@@ -70,7 +71,12 @@ func GetFileMetaHandler(w http.ResponseWriter, request *http.Request) {
 	request.ParseForm()
 
 	fileHash := request.Form["filehash"][0]
-	fileMeta := metaInfo.GetFileMeta(fileHash)
+	//fileMeta := metaInfo.GetFileMeta(fileHash)
+	fileMeta, err := metaInfo.GetFileMetaDB(fileHash)
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
 	data, err := json.Marshal(fileMeta)
 	if err != nil {
 		//fmt.Printf("failed to get file meta, err: %s\n", err.Error())
@@ -123,7 +129,8 @@ func UpdateFileMetaHandler(w http.ResponseWriter, request *http.Request) {
 
 	curFileMeta := metaInfo.GetFileMeta(fileHash)
 	curFileMeta.FileName = newFileName
-	metaInfo.UpdateFileMetaMap(curFileMeta)
+	//metaInfo.UpdateFileMetaMap(curFileMeta)
+	metaInfo.UpdateFileMetaDB(curFileMeta)
 
 	data, err := json.Marshal(curFileMeta)
 	if err != nil {
@@ -141,7 +148,7 @@ func DeleteHandler(w http.ResponseWriter, request *http.Request) {
 
 	fileMeta := metaInfo.GetFileMeta(fileSha1)
 	os.Remove(fileMeta.FileLocation)
-	
+
 	metaInfo.DeleteFileMeta(fileSha1)
 
 	w.WriteHeader(http.StatusOK)

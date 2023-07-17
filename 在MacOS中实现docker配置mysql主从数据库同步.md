@@ -103,6 +103,7 @@ mysql -u root -h 127.0.0.1 -P 3307 -p
 
 ```mysql
 mysql> CHANGE MASTER TO MASTER_HOST='192.168.2.238',MASTER_USER='reader',MASTER_LOG_FILE='binlog.000002',MASTER_LOG_POS=0,MASTER_PASSWORD='reader';
+mysql> start slave;
 ```
 
 ### 细节
